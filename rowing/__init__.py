@@ -135,4 +135,4 @@ def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True
     
     # st.pyplot(plt)
     
-    return fig, ax
+    return fig
