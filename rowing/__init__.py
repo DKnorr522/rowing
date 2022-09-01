@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 from math import floor, ceil
 
 
+'''
+Converts a number of seconds into its number of minutes, seconds, and microseconds
+'''
 def secBreakdown(time):
     minute = floor(time / 60)
     second = floor(time - minute*60)
@@ -9,25 +12,41 @@ def secBreakdown(time):
     return minute, second, microsec
 
 
+'''
+Creates string in form of readable time from number of minutes, seconds, and microseconds
+'''
 def breakdownTimePrintout(minute, second, microsec):
-##    return f"{minute}:{second + round(microsec/1e6, 1)}"
     second = f"0{second}" if second < 10 else second
     return f"{minute}:{second}.{int(microsec/1e5)}"
 
 
+'''
+Returns the number of seconds from its datetime representation
+'''
 def datetime2sec(time):
     return time.minute*60 + time.second + time.microsecond/1e6
 
 
+'''
+Returns a strings for the normal representation of a time from a number of seconds
+Input is in seconds
+'''
 def sec2timePrintout(time):
     minute, second, microsec = secBreakdown(time)
     return breakdownTimePrintout(minute, second, microsec)
 
 
+'''
+Returns the weight adjusted time for a split, given a weight
+Simply returns the split if the weight is None
+'''
 def weightAdjustSplit(split, weight):
     return split if weight is None else round(split * (weight/270)**.222, 1)
 
 
+'''
+Returns the range of times for the y-axis for a given set of rowers and their splits
+'''
 def determine_split_bounds(rowers, scores):
     minSplit = scores[rowers[0]]['splits'][0]
     maxSplit = scores[rowers[0]]['splits'][0]
@@ -45,28 +64,34 @@ def determine_split_bounds(rowers, scores):
     return [minBound, maxBound]
 
 
-def determine_range_scale(limits, majorInterval=15, minorInterval=5):
-    majorScaleVal = (limits[0] // majorInterval) * majorInterval
-    majorScaleVal = majorScaleVal if majorScaleVal >= limits[0] \
+'''
+Returns the size of y-axis tic marks given a plot's y-axis bounds and desired distance between tic marks
+'''
+def determine_range_scale(bounds, majorInterval=15, minorInterval=5):
+    majorScaleVal = (bounds[0] // majorInterval) * majorInterval
+    majorScaleVal = majorScaleVal if majorScaleVal >= bounds[0] \
         else majorScaleVal + majorInterval
 
     majorScale = []
-    while majorScaleVal <= limits[1]:
+    while majorScaleVal <= bounds[1]:
         majorScale.append(majorScaleVal)
         majorScaleVal += majorInterval
 
-    minorScaleVal = (limits[0] // minorInterval) * minorInterval
-    minorScaleVal = minorScaleVal if minorScaleVal >= limits[0] \
+    minorScaleVal = (bounds[0] // minorInterval) * minorInterval
+    minorScaleVal = minorScaleVal if minorScaleVal >= bounds[0] \
         else minorScaleVal + minorInterval
 
     minorScale = []
-    while minorScaleVal <= limits[1]:
+    while minorScaleVal <= bounds[1]:
         minorScale.append(minorScaleVal)
         minorScaleVal += minorInterval
 
     return majorScale, minorScale
 
 
+'''
+Converts an openpyxl workbook to a dictionary, storing names as keys and the rest as another dictionary
+'''
 def scores_to_dict(sheet, weightAdj=False):
     scores = {}
 
@@ -76,11 +101,9 @@ def scores_to_dict(sheet, weightAdj=False):
         weight = sheet.cell(row=i+2, column=2).value if weightAdj else None
         scores[name]['weight'] = weight
         scores[name]['time'] = weightAdjustSplit(datetime2sec(sheet.cell(row=i+2, column=3).value), weight)
-        # scores[name]['split'] = weightAdjustSplit(datetime2sec(sheet.cell(row=i+2, column=4).value), weight)
         split = datetime2sec(sheet.cell(row=i+2, column=4).value)
         scores[name]['split'] = weightAdjustSplit(split, weight)
-        if weight is not None:
-            scores[name]['split0'] = split
+        scores[name]['split0'] = split  # raw time split, no weight adjustment
         scores[name]['splits'] = []
         for j in range(5, sheet.max_column+1):
             cellVal = sheet.cell(row=i+2, column=j).value
@@ -91,6 +114,9 @@ def scores_to_dict(sheet, weightAdj=False):
     return scores
 
 
+'''
+Creates plot of rowers' splits
+'''
 def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True):
     fig, ax = plt.subplots()
     if len(rowers) == 0:  # Exit if this gets called without any rowers, just in case
