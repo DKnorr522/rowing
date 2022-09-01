@@ -1,3 +1,7 @@
+'''
+Modified from https://www.delftstack.com/howto/python/python-setup.py/ on 8/31/2022
+'''
+
 from setuptools import setup
 
 setup(
