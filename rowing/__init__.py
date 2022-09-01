@@ -107,13 +107,13 @@ def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True
             splitSize = dist / nSplits
             for i in range(nSplits):
                 split = splits[i]
-                plt.plot(splitSize * (i + 1), split, f'{color}o')
+                ax.plot(splitSize * (i + 1), split, f'{color}o')
         split = scores[rower]['split']
         lbl = f"{rower}\n{sec2timePrintout(split)}"
         if weightAdjusted:
             addendum = "\nNo Weight" if weight is None else f"\n-{round(scores[rower]['split0']-split, 1)} s"
             lbl += addendum
-        plt.axhline(y=split, color=color, linestyle='--', label=lbl)
+        ax.axhline(y=split, color=color, linestyle='--', label=lbl)
 
     ylim = determine_split_bounds(rowers, scores)
     yMajorRange, yMinorRange = determine_range_scale(ylim)
@@ -135,4 +135,4 @@ def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True
     
     # st.pyplot(plt)
     
-    return plt
+    return fig
