@@ -1,3 +1,7 @@
+import matplotlib.pyplot as plt
+from math import floor, ceil
+
+
 def secBreakdown(time):
     minute = floor(time / 60)
     second = floor(time - minute*60)
