@@ -163,4 +163,4 @@ def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True
 
     saveName = f"{ttlStart}{', '.join(rowers)}.png"
     
-    return (fig, saveName)
+    return saveName
