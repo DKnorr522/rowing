@@ -158,7 +158,9 @@ def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True
     ax.grid(True, which='major', color='black', linestyle='-', alpha=.25)
     ax.grid(True, which='minor', color='gray', linestyle='--', alpha=.25)
     ax.minorticks_on()
-    
+
     # st.pyplot(plt)
+
+    saveName = f"{ttlStart}{', '.join(rowers)}.png"
     
-    return fig
+    return fig, saveName
