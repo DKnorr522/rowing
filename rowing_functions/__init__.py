@@ -14,7 +14,7 @@ def g_sheets_time_to_sec(time):
 '''
 Converts date from Google Sheets to date object
 '''
-def g_sheets_time_to_date(day, separator='_'):
+def g_sheets_time_to_date(day, separator='/'):
     day = day.split(f"{separator}")
     y, m, d = [int(el) for el in day]
     day = date(y, m, d)
@@ -33,6 +33,8 @@ def g_sheets_to_dict(sheet, main_column="distance"):
         primary = 0; secondary = 2
 
     for entry in sheet:
+        if entry[2] == "Andy":
+            print(entry[0])
         name = entry[primary]
         scores[name] = {}
 
