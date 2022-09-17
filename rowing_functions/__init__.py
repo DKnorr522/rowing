@@ -15,6 +15,8 @@ def g_sheets_time_to_sec(time):
 Converts date from Google Sheets to date object
 '''
 def g_sheets_time_to_date(day, separator='/'):
+    print(day)
+    print(type(day))
     day = day.split(f"{separator}")
     y, m, d = [int(el) for el in day]
     day = date(y, m, d)
