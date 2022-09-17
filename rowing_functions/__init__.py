@@ -129,57 +129,57 @@ def weightAdjustSplit(split, weight):
 Returns the range of times for the y-axis for a given set of rowers and their splits
 '''
 def determine_split_bounds(rowers, scores):
-    minSplit = scores[rowers[0]]['splits'][0]
-    maxSplit = scores[rowers[0]]['splits'][0]
+    min_split = scores[rowers[0]]['splits'][0]
+    max_split = scores[rowers[0]]['splits'][0]
 
     for rower in rowers:
         for split in scores[rower]['splits']:
-            minSplit = min(minSplit, split)
-            maxSplit = max(maxSplit, split)
+            min_split = min(min_split, split)
+            max_split = max(max_split, split)
 
     interval = 5  # bounds for the splits will be multiples of 5 seconds
     # Get bounds
-    minBound = (int(minSplit) // interval) * interval
-    maxBound = ceil((maxSplit + (maxSplit-minBound) / 5) / interval) * interval
+    min_bound = (int(min_split) // interval) * interval
+    max_bound = ceil((max_split + (max_split-min_bound) / 5) / interval) * interval
 
-    return [minBound, maxBound]
+    return [min_bound, max_bound]
 
 
 '''
 Returns the size of y-axis tic marks given a plot's y-axis bounds and desired distance between tic marks
 '''
-def determine_range_scale(bounds, majorInterval=15, minorInterval=5):
-    majorScaleVal = (bounds[0] // majorInterval) * majorInterval
-    majorScaleVal = majorScaleVal if majorScaleVal >= bounds[0] \
-        else majorScaleVal + majorInterval
+def determine_range_scale(bounds, major_interval=15, minor_interval=5):
+    major_scale_val = (bounds[0] // major_interval) * major_interval
+    major_scale_val = major_scale_val if major_scale_val >= bounds[0] \
+        else major_scale_val + major_interval
 
-    majorScale = []
-    while majorScaleVal <= bounds[1]:
-        majorScale.append(majorScaleVal)
-        majorScaleVal += majorInterval
+    major_scale = []
+    while major_scale_val <= bounds[1]:
+        major_scale.append(major_scale_val)
+        major_scale_val += major_interval
 
-    minorScaleVal = (bounds[0] // minorInterval) * minorInterval
-    minorScaleVal = minorScaleVal if minorScaleVal >= bounds[0] \
-        else minorScaleVal + minorInterval
+    minor_scale_val = (bounds[0] // minor_interval) * minor_interval
+    minor_scale_val = minor_scale_val if minor_scale_val >= bounds[0] \
+        else minor_scale_val + minor_interval
 
-    minorScale = []
-    while minorScaleVal <= bounds[1]:
-        minorScale.append(minorScaleVal)
-        minorScaleVal += minorInterval
+    minor_scale = []
+    while minor_scale_val <= bounds[1]:
+        minor_scale.append(minor_scale_val)
+        minor_scale_val += minor_interval
 
-    return majorScale, minorScale
+    return major_scale, minor_scale
 
 
 '''
 Converts an openpyxl workbook to a dictionary, storing names as keys and the rest as another dictionary
 '''
-def scores_to_dict(sheet, weightAdj=False):
+def scores_to_dict(sheet, weight_adj=False):
     scores = {}
 
     for i in range(sheet.max_row-1):
         name = sheet.cell(row=i+2, column=1).value
         scores[name] = {}
-        weight = sheet.cell(row=i+2, column=2).value if weightAdj else None
+        weight = sheet.cell(row=i+2, column=2).value if weight_adj else None
         scores[name]['weight'] = weight
         scores[name]['time'] = weightAdjustSplit(datetime2sec(sheet.cell(row=i+2, column=3).value), weight)
         split = datetime2sec(sheet.cell(row=i+2, column=4).value)
@@ -187,10 +187,10 @@ def scores_to_dict(sheet, weightAdj=False):
         scores[name]['split0'] = split  # raw time split, no weight adjustment
         scores[name]['splits'] = []
         for j in range(5, sheet.max_column+1):
-            cellVal = sheet.cell(row=i+2, column=j).value
-            if cellVal is None:  # if there are no splits (left), dump out
+            cell_val = sheet.cell(row=i+2, column=j).value
+            if cell_val is None:  # if there are no splits (left), dump out
                 break
-            scores[name]['splits'].append(weightAdjustSplit(datetime2sec(cellVal), weight))
+            scores[name]['splits'].append(weightAdjustSplit(datetime2sec(cell_val), weight))
 
     return scores
 
@@ -198,7 +198,7 @@ def scores_to_dict(sheet, weightAdj=False):
 '''
 Creates plot of rowers' splits
 '''
-def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True):
+def plot_splits(rowers, scores, dist=1000, weight_adjusted=False, show_splits=True):
     fig, ax = plt.subplots()
     if len(rowers) == 0:  # Exit if this gets called without any rowers, just in case
         return
@@ -210,20 +210,20 @@ def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True
         weight = scores[rower]['weight']
         color = colors[count]  # Colors assigned in order rowers were selected
         nSplits = len(splits)
-        if showSplits and nSplits > 0:  # Only relevant if there are splits to show
-            splitSize = dist / nSplits
+        if show_splits and nSplits > 0:  # Only relevant if there are splits to show
+            split_size = dist / nSplits
             for i in range(nSplits):
                 split = splits[i]
-                ax.plot(splitSize * (i + 1), split, f'{color}o')
+                ax.plot(split_size * (i + 1), split, f'{color}o')
         split = scores[rower]['split']
         lbl = f"{rower}\n{sec2timePrintout(split)}"
-        if weightAdjusted:
+        if weight_adjusted:
             addendum = "\nNo Weight" if weight is None else f"\n-{round(scores[rower]['split0']-split, 1)} s"
             lbl += addendum
         ax.axhline(y=split, color=color, linestyle='--', label=lbl)
 
     ylim = determine_split_bounds(rowers, scores)
-    yMajorRange, yMinorRange = determine_range_scale(ylim)
+    y_major_range, y_minor_range = determine_range_scale(ylim)
 
     ax.set_xlim((0, dist))
     ax.set_ylim((ylim[0], ylim[1]))
@@ -232,8 +232,8 @@ def plot_splits(rowers, scores, dist=1000, weightAdjusted=False, showSplits=True
     plt.xlabel('Distance (m)')
     plt.ylabel('Time (sec)')
 
-    ttlStart = "Weight Adjusted " if weightAdjusted else ""
-    plt.title(f"{ttlStart}Splits for {', '.join(rowers)}")
+    ttl_start = "Weight Adjusted " if weight_adjusted else ""
+    plt.title(f"{ttl_start}Splits for {', '.join(rowers)}")
     plt.legend(ncol=len(rowers), loc='upper center')
 
     ax.grid(True, which='major', color='black', linestyle='-', alpha=.25)
