@@ -1,5 +1,74 @@
 import matplotlib.pyplot as plt
 from math import floor, ceil
+from datetime import date, datetime
+
+
+'''
+Converts string representation of time to number of seconds
+'''
+def g_sheets_time_to_sec(time):
+    minute, second = time.split(':')
+    return float(minute)*60 + float(second)
+
+
+'''
+Converts date from Google Sheets to date object
+'''
+def g_sheets_time_to_date(day, separator='_'):
+    day = day.split(f"{separator}")
+    y, m, d = [int(el) for el in day]
+    day = date(y, m, d)
+    return day
+
+
+def g_sheets_to_dict(sheet):
+    scores = {}
+
+    for entry in sheet:
+        name = entry[1]
+        scores[name] = {}
+
+        day = g_sheets_time_to_date(entry[0])
+        scores[name]["date"] = day
+
+        weight = None if entry[2] == '' else float(entry[2])
+        scores[name]["weight"] = weight
+
+        time = g_sheets_time_to_sec(entry[3])
+        scores[name]["time"] = time
+
+        split = g_sheets_time_to_sec(entry[4])
+        scores[name]["split"] = split
+
+        splits = []
+        if len(entry) > 5:
+            for split in entry[5:]:
+                splits.append(g_sheets_time_to_sec(split))
+        scores[name]["splits"] = splits
+
+    return scores
+
+
+def get_dict(scores):
+    remove_col = 1
+    scores = [[el for i, el in enumerate(entry) if i != remove_col] for entry in scores]
+    scores_dict = g_sheets_to_dict(scores)
+
+    return scores_dict
+
+
+def chose_distance(distance, piece, tests):
+    scores = [test for test in tests if test[0] == piece and test[1] == distance]
+    scores_dict = get_dict(scores)
+
+    return scores_dict
+
+
+def chose_person(person, distance, tests):
+    scores = [test for test in tests if test[2] == person and test[1] == distance]
+    scores_dict = get_dict(scores)
+
+    return scores_dict
 
 
 '''
