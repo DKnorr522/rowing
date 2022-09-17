@@ -27,7 +27,10 @@ Converts list of lists of pieces to a dictionary
 def g_sheets_to_dict(sheet, main_column="distance"):
     scores = {}
 
-    primary, secondary = [2, 0] if main_column=="distance" else [0, 2]
+    if main_column == "distance":
+        primary = 2; secondary = 0
+    else:
+        primary = 0; secondary = 2
 
     for entry in sheet:
         name = entry[primary]
