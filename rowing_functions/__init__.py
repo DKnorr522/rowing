@@ -24,28 +24,30 @@ def g_sheets_time_to_date(day, separator='_'):
 '''
 Converts list of lists of pieces to a dictionary
 '''
-def g_sheets_to_dict(sheet):
+def g_sheets_to_dict(sheet, main_column="distance"):
     scores = {}
 
+    primary, secondary = [2, 0] if main_column=="distance" else [0, 2]
+
     for entry in sheet:
-        name = entry[1]
+        name = entry[primary]
         scores[name] = {}
 
         day = g_sheets_time_to_date(entry[0])
         scores[name]["date"] = day
 
-        weight = None if entry[2] == '' else float(entry[2])
+        weight = None if entry[3] == '' else float(entry[3])
         scores[name]["weight"] = weight
 
-        time = g_sheets_time_to_sec(entry[3])
+        time = g_sheets_time_to_sec(entry[4])
         scores[name]["time"] = time
 
-        split = g_sheets_time_to_sec(entry[4])
+        split = g_sheets_time_to_sec(entry[5])
         scores[name]["split"] = split
 
         splits = []
-        if len(entry) > 5:
-            for split in entry[5:]:
+        if len(entry) > 6:
+            for split in entry[6:]:
                 splits.append(g_sheets_time_to_sec(split))
         scores[name]["splits"] = splits
 
@@ -57,7 +59,7 @@ Removes the "distance" column
 '''
 def get_dict(scores):
     remove_col = 1
-    scores = [[el for i, el in enumerate(entry) if i != remove_col] for entry in scores]
+    # scores = [[el for i, el in enumerate(entry) if i != remove_col] for entry in scores]
     scores_dict = g_sheets_to_dict(scores)
 
     return scores_dict
