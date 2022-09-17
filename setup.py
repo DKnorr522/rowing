@@ -5,10 +5,10 @@ Modified from https://www.delftstack.com/howto/python/python-setup.py/ on 8/31/2
 from setuptools import setup
 
 setup(
-   name='rowing_functions',
+   name='rowing',
    version='1.0',
    description='Rowing related functions.',
    author='Dan Knorr',
-   packages=['rowing_functions'],  # would be the same as name
+   packages=['rowing'],  # would be the same as name
 #    install_requires=['wheel', 'bar', 'greek'], #external packages acting as dependencies
 )
