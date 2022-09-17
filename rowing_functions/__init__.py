@@ -212,10 +212,10 @@ def plot_splits(rowers, scores, dist=1000, weight_adjusted=False, show_splits=Tr
         splits = scores[rower]['splits']
         weight = scores[rower]['weight']
         color = colors[count]  # Colors assigned in order rowers were selected
-        nSplits = len(splits)
-        if show_splits and nSplits > 0:  # Only relevant if there are splits to show
-            split_size = dist / nSplits
-            for i in range(nSplits):
+        n_splits = len(splits)
+        if show_splits and n_splits > 0:  # Only relevant if there are splits to show
+            split_size = dist / n_splits
+            for i in range(n_splits):
                 split = splits[i]
                 ax.plot(split_size * (i + 1), split, f'{color}o')
         split = scores[rower]['split']
