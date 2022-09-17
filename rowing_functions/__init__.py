@@ -33,6 +33,7 @@ def g_sheets_to_dict(sheet, main_column="distance"):
         name = entry[primary]
         scores[name] = {}
 
+        scores[name]["date_raw"] = entry[secondary]
         day = g_sheets_time_to_date(entry[0])
         scores[name]["date"] = day
 
@@ -57,10 +58,10 @@ def g_sheets_to_dict(sheet, main_column="distance"):
 '''
 Removes the "distance" column
 '''
-def get_dict(scores):
-    remove_col = 1
+def get_dict(scores, choice):
+    # remove_col = 1
     # scores = [[el for i, el in enumerate(entry) if i != remove_col] for entry in scores]
-    scores_dict = g_sheets_to_dict(scores)
+    scores_dict = g_sheets_to_dict(scores, choice)
 
     return scores_dict
 
@@ -70,7 +71,7 @@ Gets proper data from dictionary when "distance" is selected
 '''
 def chose_distance(distance, piece, tests):
     scores = [test for test in tests if test[0] == piece and test[1] == distance]
-    scores_dict = get_dict(scores)
+    scores_dict = get_dict(scores, "distance")
 
     return scores_dict
 
@@ -80,7 +81,7 @@ Gets proper data from dictionary when "personal" is selected
 '''
 def chose_person(person, distance, tests):
     scores = [test for test in tests if test[2] == person and test[1] == distance]
-    scores_dict = get_dict(scores)
+    scores_dict = get_dict(scores, "personal")
 
     return scores_dict
 
