@@ -21,6 +21,9 @@ def g_sheets_time_to_date(day, separator='_'):
     return day
 
 
+'''
+Converts list of lists of pieces to a dictionary
+'''
 def g_sheets_to_dict(sheet):
     scores = {}
 
@@ -49,6 +52,9 @@ def g_sheets_to_dict(sheet):
     return scores
 
 
+'''
+Removes the "distance" column
+'''
 def get_dict(scores):
     remove_col = 1
     scores = [[el for i, el in enumerate(entry) if i != remove_col] for entry in scores]
@@ -57,6 +63,9 @@ def get_dict(scores):
     return scores_dict
 
 
+'''
+Gets proper data from dictionary when "distance" is selected
+'''
 def chose_distance(distance, piece, tests):
     scores = [test for test in tests if test[0] == piece and test[1] == distance]
     scores_dict = get_dict(scores)
@@ -64,6 +73,9 @@ def chose_distance(distance, piece, tests):
     return scores_dict
 
 
+'''
+Gets proper data from dictionary when "personal" is selected
+'''
 def chose_person(person, distance, tests):
     scores = [test for test in tests if test[2] == person and test[1] == distance]
     scores_dict = get_dict(scores)
