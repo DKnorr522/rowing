@@ -14,11 +14,8 @@ def g_sheets_time_to_sec(time):
 '''
 Converts date from Google Sheets to date object
 '''
-def g_sheets_time_to_date(day, separator='/'):
-    day = day.split(f"{separator}")
-    y, m, d = [int(el) for el in day]
-    day = date(y, m, d)
-    return day
+def g_sheets_time_to_date(day):
+    return date.fromisoformat(day.replace('/', '-'))
 
 
 '''
@@ -62,10 +59,7 @@ def g_sheets_to_dict(sheet, main_column="distance"):
 Removes the "distance" column
 '''
 def get_dict(scores, choice):
-    # remove_col = 1
-    # scores = [[el for i, el in enumerate(entry) if i != remove_col] for entry in scores]
     scores_dict = g_sheets_to_dict(scores, choice)
-
     return scores_dict
 
 
