@@ -3,6 +3,12 @@ from math import floor, ceil
 from datetime import date, datetime
 
 
+'''
+num_oars refers to the number of oars of the boat. A single is used by default
+Formula taken from:
+https://analytics.rowsandall.com/
+2018/03/08/aging-and-rowing-performance-part-4-a-look-at-the-usrowing-age-handicapping-system/
+'''
 def age_handicap(age, num_oars=2):
     k = {2: .025, 4: .0216, 8: .020}
     p80 = {2: 2.7, 4: 2.3, 8: 2.0}
