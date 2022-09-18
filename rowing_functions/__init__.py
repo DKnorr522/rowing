@@ -5,7 +5,11 @@ from datetime import date, datetime
 
 def age_handicap(age, num_oars=2):
     k = {2: .025, 4: .0216, 8: .020}
-    hc = ((floor(age)-27)**2) * k[num_oars]
+    p80 = {2: 2.7, 4: 2.3, 8: 2.0}
+    age = floor(age)
+    hc = ((age-27)**2) * k[num_oars]
+    if age > 80:
+        hc += p80[num_oars] * (age-80)
     return hc
 
 
