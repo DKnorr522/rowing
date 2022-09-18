@@ -3,6 +3,12 @@ from math import floor, ceil
 from datetime import date, datetime
 
 
+def age_handicap(age, num_oars=2):
+    k = {2: .025, 4: .0216, 8: .020}
+    hc = ((floor(age)-27)**2) * k[num_oars]
+    return hc
+
+
 '''
 Converts string representation of time to number of seconds
 '''
